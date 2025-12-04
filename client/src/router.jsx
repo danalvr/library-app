@@ -5,7 +5,6 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Books from "./pages/books/Books";
 import Members from "./pages/members/Members";
 import Borrowings from "./pages/borrowings/Borrowings";
-import NewBook from "./pages/books/NewBook";
 
 export const router = createBrowserRouter([
   {
@@ -16,10 +15,7 @@ export const router = createBrowserRouter([
       { index: true, element: <Dashboard /> },
       {
         path: "books",
-        children: [
-          { index: true, element: <Books /> },
-          { path: "create", element: <NewBook /> },
-        ],
+        children: [{ index: true, element: <Books /> }],
       },
       {
         path: "members",
