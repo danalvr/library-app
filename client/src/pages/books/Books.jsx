@@ -27,7 +27,7 @@ const Books = () => {
         open={showModal.edit}
         onClose={() => toggleModal("edit")}
       />
-      <h1 className="text-3xl font-semibold mb-2">Books</h1>
+      <h1 className="text-2xl font-semibold mb-2">List Books</h1>
       <Button
         icon="pi pi-plus"
         onClick={() => toggleModal("create")}
