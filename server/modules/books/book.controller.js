@@ -44,7 +44,6 @@ exports.bookController = {
       const updated = await bookService.update(Number(req.params.id), dto);
       res.json(updated);
     } catch (err) {
-      console.log("TEST LAGI", err);
       next(err);
     }
   },

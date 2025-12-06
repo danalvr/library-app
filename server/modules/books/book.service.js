@@ -47,7 +47,6 @@ exports.bookService = {
   },
 
   async update(id, dto) {
-    console.log("TESTTTT", dto);
     const author = await authorRepository.findById(dto.authorId);
     if (!author) {
       const error = new Error("Author not found");
