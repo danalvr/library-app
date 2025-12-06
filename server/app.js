@@ -8,6 +8,7 @@ const { ZodError } = require("zod");
 
 var indexRouter = require("./routes/index");
 var authorRouter = require("./modules/authors/author.routes");
+var memberRouter = require("./modules/members/member.routes");
 var usersRouter = require("./routes/users");
 
 var app = express();
@@ -24,6 +25,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/authors", authorRouter);
+app.use("/members", memberRouter);
 app.use("/users", usersRouter);
 
 // catch 404 and forward to error handler
