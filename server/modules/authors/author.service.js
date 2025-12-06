@@ -1,7 +1,12 @@
 const { authorRepository } = require("./author.repository");
 
 exports.authorService = {
-  async list({ page = 1, limit = 10 }) {
+  async list({ page = 1, limit = 10, all }) {
+    if (all === "true") {
+      const data = await authorRepository.findAllWithoutPagination();
+      return { data };
+    }
+
     const p = Number(page);
     const l = Number(limit);
 

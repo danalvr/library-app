@@ -11,6 +11,12 @@ exports.authorRepository = {
     });
   },
 
+  findAllWithoutPagination() {
+    return prisma.authors.findMany({
+      orderBy: { createdAt: "asc" },
+    });
+  },
+
   count() {
     return prisma.authors.count();
   },

@@ -10,6 +10,7 @@ exports.memberRepository = {
       orderBy: { createdAt: "asc" },
     });
   },
+
   findAllWithoutPagination() {
     return prisma.members.findMany({
       orderBy: { createdAt: "asc" },
