@@ -3,10 +3,35 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 exports.borrowingRepository = {
-  findAll(skip, take) {
+  findAll(skip, take, searchBy, keyword) {
+    const where = {};
+
+    if (keyword && searchBy) {
+      if (searchBy === "book") {
+        where.book = {
+          title: { contains: keyword },
+        };
+      }
+
+      if (searchBy === "member") {
+        where.member = {
+          name: { contains: keyword },
+        };
+      }
+      if (searchBy === "date") {
+        where.borrowDate = {
+          gte: new Date(keyword),
+          lt: new Date(
+            new Date(keyword).setDate(new Date(keyword).getDate() + 1)
+          ),
+        };
+      }
+    }
+
     return prisma.borrowings.findMany({
       skip,
       take,
+      where,
       orderBy: { createdAt: "asc" },
       select: {
         id: true,
@@ -24,8 +49,32 @@ exports.borrowingRepository = {
     });
   },
 
-  count() {
-    return prisma.borrowings.count();
+  count(searchBy, keyword) {
+    const where = {};
+
+    if (keyword && searchBy) {
+      if (searchBy === "book") {
+        where.book = {
+          title: { contains: keyword },
+        };
+      }
+
+      if (searchBy === "member") {
+        where.member = {
+          name: { contains: keyword },
+        };
+      }
+      if (searchBy === "date") {
+        where.borrowDate = {
+          gte: new Date(keyword),
+          lt: new Date(
+            new Date(keyword).setDate(new Date(keyword).getDate() + 1)
+          ),
+        };
+      }
+    }
+
+    return prisma.borrowings.count({ where });
   },
 
   findById(id) {

@@ -3,13 +3,13 @@ const { bookRepository } = require("../books/book.repository");
 const { memberRepository } = require("../members/member.repository");
 
 exports.borrowingService = {
-  async list({ page = 1, limit = 10 }) {
+  async list({ page = 1, limit = 10, searchBy, keyword }) {
     const p = Number(page);
     const l = Number(limit);
 
     const [total, data] = await Promise.all([
-      borrowingRepository.count(),
-      borrowingRepository.findAll((p - 1) * l, l),
+      borrowingRepository.count(searchBy, keyword),
+      borrowingRepository.findAll((p - 1) * l, l, searchBy, keyword),
     ]);
 
     const enriched = data.map(this.enrichStatus);
