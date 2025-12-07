@@ -5,6 +5,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Books from "./pages/books/Books";
 import Members from "./pages/members/Members";
 import Borrowings from "./pages/borrowings/Borrowings";
+import Authors from "./pages/authors/Authors";
 
 export const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ export const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { index: true, element: <Dashboard /> },
+      {
+        path: "authors",
+        children: [{ index: true, element: <Authors /> }],
+      },
       {
         path: "books",
         children: [{ index: true, element: <Books /> }],
