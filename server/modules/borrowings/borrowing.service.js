@@ -73,7 +73,7 @@ exports.borrowingService = {
 
     if (dto.return === true) {
       const isOverdue = now > effectiveDueDate;
-      dto.status = isOverdue ? "RETURNED LATE" : "RETURNED";
+      dto.status = isOverdue ? "RETURNED_LATE" : "RETURNED";
       dto.returnDate = now;
     } else {
       dto.returnDate = null;

@@ -25,6 +25,12 @@ exports.bookRepository = {
     });
   },
 
+  findAllWithoutPagination() {
+    return prisma.books.findMany({
+      orderBy: { createdAt: "asc" },
+    });
+  },
+
   count(where) {
     return prisma.books.count({ where });
   },
