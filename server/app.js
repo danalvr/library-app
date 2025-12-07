@@ -10,6 +10,7 @@ var indexRouter = require("./routes/index");
 var authorRouter = require("./modules/authors/author.routes");
 var bookRouter = require("./modules/books/book.routes");
 var memberRouter = require("./modules/members/member.routes");
+var borrowingRouter = require("./modules/borrowings/borrowing.routes");
 var usersRouter = require("./routes/users");
 
 var app = express();
@@ -28,6 +29,7 @@ app.use("/", indexRouter);
 app.use("/authors", authorRouter);
 app.use("/books", bookRouter);
 app.use("/members", memberRouter);
+app.use("/borrowings", borrowingRouter);
 app.use("/users", usersRouter);
 
 // catch 404 and forward to error handler
