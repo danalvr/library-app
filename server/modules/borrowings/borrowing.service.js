@@ -85,6 +85,6 @@ exports.borrowingService = {
   },
 
   async remove(id) {
-    return borrowingRepository.delete(id);
+    return borrowingRepository.remove(id);
   },
 };
