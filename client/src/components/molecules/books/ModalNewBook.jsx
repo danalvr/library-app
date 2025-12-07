@@ -1,28 +1,75 @@
-import React, { useState } from "react";
-import BaseModal from "../../elements/BaseModal";
-import Input from "../../elements/Input";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+
 import { Button } from "primereact/button";
+import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 
-const ModalNewBook = ({ open, onClose }) => {
-  const [event, setEvent] = useState("");
-  const navigate = useNavigate();
+import BaseModal from "../../elements/BaseModal";
 
-  const handleNavigate = (href) => {
-    navigate(href);
+import { createBook } from "../../../api/books";
+import { fetchAllAuthors } from "../../../api/authors";
+
+const ModalNewBook = ({ open, onClose, onSuccess }) => {
+  const [title, setTitle] = useState("");
+  const [authorId, setAuthorId] = useState(null);
+  const [category, setCategory] = useState("");
+  const [publishingYear, setPublishingYear] = useState("");
+  const [description, setDescription] = useState("");
+
+  const [authors, setAuthors] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (open) loadAuthors();
+  }, [open]);
+
+  const loadAuthors = async () => {
+    try {
+      const res = await fetchAllAuthors();
+      setAuthors(res);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to load authors");
+    }
   };
 
-  const handleChange = (e) => {
-    setEvent(e.target.value);
+  const resetForm = () => {
+    setTitle("");
+    setAuthorId(null);
+    setCategory("");
+    setPublishingYear("");
+    setDescription("");
   };
 
-  const handleSave = () => {
-    // onClose();
-    // handleNavigate("/generate/1");
-    // dispatch(setEventName(event));
+  const handleSave = async () => {
+    if (!title.trim() || !authorId || !publishingYear.trim()) {
+      alert("Title, Author & Publishing Year required");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await createBook({
+        title,
+        authorId,
+        category,
+        publishingYear: Number(publishingYear),
+        description,
+      });
+
+      resetForm();
+      onClose();
+      onSuccess();
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to create book");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (!open) return null;
   return (
     <BaseModal open={open}>
       <div className="modal-main fixed w-full h-full md:h-[500px] md:w-[690px] px-8 py-8 top-0 md:top-25 left-0 md:left-[25%] flex flex-col items-center rounded-xl bg-white overflow-auto">
@@ -32,46 +79,73 @@ const ModalNewBook = ({ open, onClose }) => {
             className="cursor-pointer hover:bg-[#eae9e9] hover:rounded-full p-2"
             onClick={onClose}
           >
-            {/* <img src={icons.close} width={28} alt="icon close" /> */}
-            <i className="pi pi-times" style={{ color: "green" }}></i>
+            <i className="pi pi-times" style={{ color: "black" }}></i>
           </span>
         </div>
+
         <div className="mt-5 w-full">
-          <label htmlFor="new-certificate" className="text-base font-medium">
-            Title
-          </label>
-          <InputText className="w-full" placeholder="type the title..." />
-        </div>
-        <div className="mt-5 w-full">
-          <label htmlFor="new-certificate" className="text-base font-medium">
-            Author
-          </label>
-          <InputText className="w-full" placeholder="type the author..." />
-        </div>
-        <div className="mt-5 w-full">
-          <label htmlFor="new-certificate" className="text-base font-medium">
-            Category
-          </label>
-          <InputText className="w-full" placeholder="type the category..." />
-        </div>
-        <div className="mt-5 w-full">
-          <label htmlFor="new-certificate" className="text-base font-medium">
-            Publishing Year
-          </label>
+          <label className="text-base font-medium">Title</label>
           <InputText
-            className="w-full"
-            placeholder="type the publishing year..."
+            className="w-full mt-2"
+            placeholder="type the title..."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </div>
+
         <div className="mt-5 w-full">
-          <label htmlFor="new-certificate" className="text-base font-medium">
-            Description
-          </label>
-          <InputTextarea className="w-full" />
+          <label className="text-base font-medium">Author</label>
+          <Dropdown
+            value={authorId}
+            options={authors}
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Select an author"
+            className="w-full mt-2"
+            onChange={(e) => setAuthorId(e.value)}
+          />
         </div>
+
+        <div className="mt-5 w-full">
+          <label className="text-base font-medium">Category</label>
+          <InputText
+            className="w-full mt-2"
+            value={category}
+            placeholder="type the category..."
+            onChange={(e) => setCategory(e.target.value)}
+          />
+        </div>
+
+        <div className="mt-5 w-full">
+          <label className="text-base font-medium">Publishing Year</label>
+          <InputText
+            className="w-full mt-2"
+            placeholder="type the publishing year..."
+            value={publishingYear}
+            onChange={(e) => setPublishingYear(e.target.value)}
+          />
+        </div>
+
+        <div className="mt-5 w-full">
+          <label className="text-base font-medium">Description</label>
+          <InputTextarea
+            className="w-full mt-2"
+            value={description}
+            placeholder="type the description..."
+            onChange={(e) => setDescription(e.target.value)}
+            rows={4}
+          />
+        </div>
+
         <hr className="mt-3 mb-5 w-full border-none bg-[#D8DCDF] h-[1px]" />
-        <div className="mt-2 w-full flex items-center justify-end">
-          <Button label="Add Book" size="small" />
+
+        <div className="w-full flex items-center justify-end">
+          <Button
+            label={loading ? "Saving..." : "Add Book"}
+            size="small"
+            onClick={handleSave}
+            disabled={loading}
+          />
         </div>
       </div>
     </BaseModal>
