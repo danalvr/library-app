@@ -1,31 +1,113 @@
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
+
 import { Button } from "primereact/button";
+import { Toast } from "primereact/toast";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
 import ModalNewBorrowing from "../../components/molecules/borrowings/ModalNewBorrowing";
 import ModalEditBorrowing from "../../components/molecules/borrowings/ModalEditBorrowing";
 
+import { fetchBorrowings, deleteBorrowing } from "../../api/borrowings";
+
 const Borrowings = () => {
+  const [borrowings, setBorrowings] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+
   const [showModal, setShowModal] = useState({
     create: false,
     edit: false,
   });
 
-  const toggleModal = (category) => {
-    setShowModal((prev) => ({
-      ...prev,
-      [category]: !prev[category],
-    }));
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 4,
+    total: 0,
+  });
+
+  const toast = useRef(null);
+
+  useEffect(() => {
+    loadBorrowings();
+  }, []);
+
+  const toggleModal = (category, id = null) => {
+    if (id) setSelectedId(id);
+    setShowModal((prev) => ({ ...prev, [category]: !prev[category] }));
   };
+
+  const loadBorrowings = async (page = pagination.page) => {
+    try {
+      setLoading(true);
+      const res = await fetchBorrowings(page, pagination.limit);
+      setBorrowings(res.data);
+      setPagination((prev) => ({
+        ...prev,
+        page: res.pagination.page,
+        limit: res.pagination.limit,
+        total: res.pagination.total,
+      }));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to load borrowings");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const statusColor = {
+    BORROWED: "bg-blue-500 text-white",
+    OVERDUE: "bg-red-500 text-white",
+    RETURNED: "bg-green-500 text-white",
+    RETURNED_LATE: "bg-orange-500 text-white",
+  };
+
+  const onDelete = (id) => {
+    confirmDialog({
+      message: "Are you sure to delete this borrowing record?",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      acceptClassName: "p-button-danger",
+      accept: () => handleDelete(id),
+    });
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteBorrowing(id);
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Borrowing removed successfully",
+        life: 2000,
+      });
+      loadBorrowings();
+    } catch (err) {
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: err.response?.data?.message || "Failed to delete borrowing",
+        life: 2000,
+      });
+    }
+  };
+
+  const totalPages = Math.ceil(pagination.total / pagination.limit);
 
   return (
     <div className="w-full border border-slate-200 p-4 rounded-md shadow-md">
+      <Toast ref={toast} />
+      <ConfirmDialog />
       <ModalNewBorrowing
         open={showModal.create}
         onClose={() => toggleModal("create")}
+        onSuccess={loadBorrowings}
       />
       <ModalEditBorrowing
         open={showModal.edit}
         onClose={() => toggleModal("edit")}
+        onSuccess={loadBorrowings}
+        selectedId={selectedId}
       />
       <h1 className="text-2xl font-semibold mb-2">List Borrow Management</h1>
       <Button
@@ -61,44 +143,107 @@ const Borrowings = () => {
             </tr>
           </thead>
           <tbody>
-            <tr class="odd:bg-neutral-primary even:bg-neutral-secondary-soft border-b border-default">
-              <th
-                scope="row"
-                class="px-6 py-4 font-medium text-heading whitespace-nowrap"
-              >
-                Apple MacBook Pro 17"
-              </th>
-              <td class="px-6 py-4">Silver</td>
-              <td class="px-6 py-4">Laptop</td>
-              <td class="px-6 py-4">Laptop</td>
-              <td class="px-6 py-4">Laptop</td>
-              <td class="px-6 py-4">
-                <div className="flex items-center gap-2">
-                  <Button
-                    size="small"
-                    severity="warning"
-                    icon="pi pi-pencil"
-                    onClick={() => toggleModal("edit")}
-                  ></Button>
-                  <Button
-                    size="small"
-                    severity="danger"
-                    icon="pi pi-trash"
-                  ></Button>
-                </div>
-              </td>
-            </tr>
+            {loading ? (
+              <tr>
+                <td colSpan="6" className="text-center py-4">
+                  Loading...
+                </td>
+              </tr>
+            ) : borrowings.length === 0 ? (
+              <tr>
+                <td colSpan="6" className="text-center py-4">
+                  No borrowings
+                </td>
+              </tr>
+            ) : (
+              borrowings.map((b) => (
+                <tr
+                  key={b.id}
+                  className="border-b border-default odd:bg-neutral-primary even:bg-neutral-secondary-soft"
+                >
+                  <td className="px-6 py-4">{b.member.name}</td>
+                  <td className="px-6 py-4">{b.book.title}</td>
+                  <td className="px-6 py-4">
+                    {new Date(b.borrowDate).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4">
+                    {new Date(b.dueDate).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`px-2 py-1 text-xs rounded ${
+                        statusColor[b.status]
+                      }`}
+                    >
+                      {b.status.replace("_", " ")}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 flex gap-2">
+                    <Button
+                      size="small"
+                      severity="warning"
+                      icon="pi pi-pencil"
+                      onClick={() => {
+                        setSelectedId(b.id);
+                        toggleModal("edit");
+                      }}
+                    ></Button>
+                    <Button
+                      size="small"
+                      severity="danger"
+                      icon="pi pi-trash"
+                      onClick={() => onDelete(b.id)}
+                    ></Button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
-      <div className="mt-2 p-2 flex items-center justify-between">
-        <div>
-          <p>1-4 of 4</p>
-        </div>
+      <div className="mt-4 flex items-center justify-between">
+        <p className="text-sm text-gray-600">
+          Page {pagination.page} of {totalPages}
+        </p>
+
         <div className="flex items-center gap-2">
-          <p>Previous</p>
-          <p>1</p>
-          <p>Next</p>
+          <Button
+            label="Previous"
+            size="small"
+            disabled={pagination.page === 1}
+            onClick={() => loadBorrowings(pagination.page - 1)}
+            className="!px-3 !py-1"
+          />
+
+          {[...Array(totalPages)].map((_, index) => {
+            const pageNum = index + 1;
+            const isActive = pagination.page === pageNum;
+
+            return (
+              <button
+                key={pageNum}
+                onClick={() => loadBorrowings(pageNum)}
+                className={`
+            w-8 h-8 rounded-full flex items-center justify-center text-sm
+            ${
+              isActive
+                ? "bg-neutral-700 text-white"
+                : "bg-white text-neutral-700 border border-neutral-300 hover:bg-neutral-200"
+            }
+          `}
+              >
+                {pageNum}
+              </button>
+            );
+          })}
+
+          <Button
+            label="Next"
+            size="small"
+            disabled={pagination.page === totalPages}
+            onClick={() => loadBorrowings(pagination.page + 1)}
+            className="!px-3 !py-1"
+          />
         </div>
       </div>
     </div>
