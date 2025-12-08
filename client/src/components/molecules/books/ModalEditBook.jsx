@@ -63,7 +63,7 @@ const ModalEditBook = ({ open, onClose, selectedId, onSuccess }) => {
   }, [open, selectedId]);
 
   const handleSave = async () => {
-    if (!title.trim() || !authorId || !publishingYear.trim()) {
+    if (!title.trim() || !authorId || !publishingYear) {
       alert("Title, Author & Publishing Year required");
       return;
     }
