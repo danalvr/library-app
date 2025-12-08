@@ -7,6 +7,7 @@ var logger = require("morgan");
 const { ZodError } = require("zod");
 
 var indexRouter = require("./routes/index");
+var dashboardRouter = require("./modules/dashboards/dashboard.routes");
 var authorRouter = require("./modules/authors/author.routes");
 var bookRouter = require("./modules/books/book.routes");
 var memberRouter = require("./modules/members/member.routes");
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/", indexRouter);
+app.use("/dashboards", dashboardRouter);
 app.use("/authors", authorRouter);
 app.use("/books", bookRouter);
 app.use("/members", memberRouter);
