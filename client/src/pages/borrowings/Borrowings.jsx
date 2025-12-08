@@ -188,6 +188,7 @@ const Borrowings = () => {
           <Button
             size="small"
             severity="secondary"
+            outlined
             icon="pi pi-search"
             onClick={() => loadBorrowings(1)}
           />
@@ -195,7 +196,7 @@ const Borrowings = () => {
       </div>
       <div class="mt-5 relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
         <table class="w-full text-sm text-left rtl:text-right text-body">
-          <thead class="bg-neutral-secondary-soft border-b border-default">
+          <thead class="bg-slate-200 border-b border-default">
             <tr>
               <th scope="col" class="px-6 py-3 font-medium">
                 Member
@@ -257,6 +258,7 @@ const Borrowings = () => {
                     <Button
                       size="small"
                       severity="warning"
+                      outlined
                       icon="pi pi-pencil"
                       onClick={() => {
                         setSelectedId(b.id);
@@ -266,6 +268,7 @@ const Borrowings = () => {
                     <Button
                       size="small"
                       severity="danger"
+                      outlined
                       icon="pi pi-trash"
                       onClick={() => onDelete(b.id)}
                     ></Button>
@@ -283,8 +286,9 @@ const Borrowings = () => {
 
         <div className="flex items-center gap-2">
           <Button
-            label="Previous"
+            icon="pi pi-angle-double-left"
             size="small"
+            outlined
             disabled={pagination.page === 1}
             onClick={() => loadBorrowings(pagination.page - 1)}
             className="!px-3 !py-1"
@@ -302,8 +306,8 @@ const Borrowings = () => {
             w-8 h-8 rounded-full flex items-center justify-center text-sm
             ${
               isActive
-                ? "bg-neutral-700 text-white"
-                : "bg-white text-neutral-700 border border-neutral-300 hover:bg-neutral-200"
+                ? "bg-cyan text-white"
+                : "bg-white text-slate-700 border border-neutral-300 hover:bg-neutral-200"
             }
           `}
               >
@@ -313,8 +317,9 @@ const Borrowings = () => {
           })}
 
           <Button
-            label="Next"
+            icon="pi pi-angle-double-left"
             size="small"
+            outlined
             disabled={pagination.page === totalPages}
             onClick={() => loadBorrowings(pagination.page + 1)}
             className="!px-3 !py-1"

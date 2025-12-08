@@ -131,7 +131,7 @@ const Authors = () => {
       </Button>
       <div class="mt-5 relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
         <table class="w-full text-sm text-left rtl:text-right text-body">
-          <thead class="bg-neutral-secondary-soft border-b border-default">
+          <thead class="bg-slate-200 border-b border-default">
             <tr>
               <th scope="col" class="px-6 py-3 font-medium">
                 Name
@@ -169,6 +169,7 @@ const Authors = () => {
                         size="small"
                         severity="warning"
                         icon="pi pi-pencil"
+                        outlined
                         onClick={() => {
                           setSelectedId(author.id);
                           toggleModal("edit");
@@ -178,6 +179,7 @@ const Authors = () => {
                         size="small"
                         severity="danger"
                         icon="pi pi-trash"
+                        outlined
                         onClick={() => onDelete(author.id)}
                       ></Button>
                     </div>
@@ -195,8 +197,9 @@ const Authors = () => {
 
         <div className="flex items-center gap-2">
           <Button
-            label="Previous"
+            icon="pi pi-angle-double-left"
             size="small"
+            outlined
             disabled={pagination.page === 1}
             onClick={() => loadAuthors(pagination.page - 1)}
             className="!px-3 !py-1"
@@ -214,8 +217,8 @@ const Authors = () => {
             w-8 h-8 rounded-full flex items-center justify-center text-sm
             ${
               isActive
-                ? "bg-neutral-700 text-white"
-                : "bg-white text-neutral-700 border border-neutral-300 hover:bg-neutral-200"
+                ? "bg-cyan text-white"
+                : "bg-white text-slate-700 border border-neutral-300 hover:bg-neutral-200"
             }
           `}
               >
@@ -225,8 +228,9 @@ const Authors = () => {
           })}
 
           <Button
-            label="Next"
+            icon="pi pi-angle-double-right"
             size="small"
+            outlined
             disabled={pagination.page === totalPages}
             onClick={() => loadAuthors(pagination.page + 1)}
             className="!px-3 !py-1"
