@@ -62,7 +62,18 @@ exports.bookRepository = {
     return prisma.books.update({ where: { id }, data });
   },
 
-  delete(id) {
+  async delete(id) {
+    const borrowingCount = await prisma.borrowings.count({
+      where: {
+        bookId: id,
+      },
+    });
+
+    if (borrowingCount > 0) {
+      throw new Error(
+        "This member cannot be deleted because they still have borrowings record."
+      );
+    }
     return prisma.books.delete({ where: { id } });
   },
 };

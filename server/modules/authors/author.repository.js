@@ -35,7 +35,17 @@ exports.authorRepository = {
     return prisma.authors.update({ where: { id }, data });
   },
 
-  delete(id) {
+  async delete(id) {
+    const bookCount = await prisma.books.count({
+      where: { authorId: id },
+    });
+
+    if (bookCount > 0) {
+      throw new Error(
+        "This author cannot be deleted because it is still linked to existing books."
+      );
+    }
+
     return prisma.authors.delete({ where: { id } });
   },
 };
