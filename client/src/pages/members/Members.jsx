@@ -4,12 +4,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
+import { Skeleton } from "primereact/skeleton";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
 import ModalNewMember from "../../components/molecules/members/ModalNewMember";
 import ModalEditMember from "../../components/molecules/members/ModalEditMember";
 
 import { fetchMembers, deleteMember } from "../../api/members";
+
+import { wait } from "../../utils";
 
 const Members = () => {
   const [showModal, setShowModal] = useState({
@@ -56,7 +59,9 @@ const Members = () => {
   const loadMembers = async (page = pagination.page) => {
     try {
       setLoading(true);
-      const res = await fetchMembers(page, pagination.limit);
+      const resPromise = await fetchMembers(page, pagination.limit);
+
+      const [res] = await Promise.all([resPromise, wait(300)]);
 
       setMembers(res.data);
       setPagination({
@@ -74,8 +79,6 @@ const Members = () => {
       setLoading(false);
     }
   };
-
-  const totalPages = Math.ceil(pagination.total / pagination.limit);
 
   const onDelete = (id) => {
     confirmDialog({
@@ -104,6 +107,30 @@ const Members = () => {
       });
     }
   };
+
+  const renderSkeletonRows = () => {
+    return Array.from({ length: pagination.limit }).map((_, idx) => (
+      <tr key={`skeleton-${idx}`} className="border-b border-default">
+        <td className="px-6 py-4">
+          <Skeleton width="70%" height="1rem" />
+        </td>
+        <td className="px-6 py-4">
+          <Skeleton width="90%" height="1rem" />
+        </td>
+        <td className="px-6 py-4">
+          <Skeleton width="50%" height="1rem" />
+        </td>
+        <td className="px-6 py-4">
+          <div className="flex gap-2">
+            <Skeleton shape="circle" width="2rem" height="2rem" />
+            <Skeleton shape="circle" width="2rem" height="2rem" />
+          </div>
+        </td>
+      </tr>
+    ));
+  };
+
+  const totalPages = Math.ceil(pagination.total / pagination.limit);
 
   return (
     <div className="w-full border border-slate-200 p-4 rounded-md shadow-md">
@@ -152,11 +179,7 @@ const Members = () => {
           </thead>
           <tbody>
             {loading ? (
-              <tr>
-                <td colSpan={4} className="px-6 py-4">
-                  Loading...
-                </td>
-              </tr>
+              renderSkeletonRows()
             ) : members.length === 0 ? (
               <tr>
                 <td colSpan={4} className="px-6 py-4">

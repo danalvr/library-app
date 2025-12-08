@@ -4,12 +4,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { Button } from "primereact/button";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { Skeleton } from "primereact/skeleton";
 import { Toast } from "primereact/toast";
 
 import ModalNewBook from "../../components/molecules/books/ModalNewBook";
 import ModalEditBook from "../../components/molecules/books/ModalEditBook";
 
 import { fetchBooks, deleteBook } from "../../api/books";
+
+import { wait } from "../../utils";
 
 const Books = () => {
   const [books, setBooks] = useState([]);
@@ -56,7 +59,10 @@ const Books = () => {
   const loadBooks = async (page = pagination.page) => {
     try {
       setLoading(true);
-      const res = await fetchBooks(page, pagination.limit);
+      const resPromise = await fetchBooks(page, pagination.limit);
+
+      const [res] = await Promise.all([resPromise, wait(500)]);
+
       setBooks(res.data);
       setPagination((prev) => ({
         ...prev,
@@ -101,6 +107,28 @@ const Books = () => {
         life: 2000,
       });
     }
+  };
+
+  const renderSkeletonRows = () => {
+    return Array.from({ length: pagination.limit }).map((_, idx) => (
+      <tr key={`skeleton-${idx}`} className="border-b border-default">
+        <td className="px-6 py-4">
+          <Skeleton width="70%" height="1rem" />
+        </td>
+        <td className="px-6 py-4">
+          <Skeleton width="50%" height="1rem" />
+        </td>
+        <td className="px-6 py-4">
+          <Skeleton width="40%" height="1rem" />
+        </td>
+        <td className="px-6 py-4">
+          <div className="flex gap-2">
+            <Skeleton shape="circle" width="2rem" height="2rem" />
+            <Skeleton shape="circle" width="2rem" height="2rem" />
+          </div>
+        </td>
+      </tr>
+    ));
   };
 
   const totalPages = Math.ceil(pagination.total / pagination.limit);
@@ -149,11 +177,7 @@ const Books = () => {
           </thead>
           <tbody>
             {loading ? (
-              <tr>
-                <td colSpan="4" className="px-6 py-4">
-                  Loading...
-                </td>
-              </tr>
+              renderSkeletonRows()
             ) : books.length === 0 ? (
               <tr>
                 <td colSpan="4" className="px-6 py-4">

@@ -6,6 +6,7 @@ import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
+import { Skeleton } from "primereact/skeleton";
 import { Toast } from "primereact/toast";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
@@ -13,6 +14,8 @@ import ModalNewBorrowing from "../../components/molecules/borrowings/ModalNewBor
 import ModalEditBorrowing from "../../components/molecules/borrowings/ModalEditBorrowing";
 
 import { fetchBorrowings, deleteBorrowing } from "../../api/borrowings";
+
+import { wait } from "../../utils/index";
 
 const Borrowings = () => {
   const [borrowings, setBorrowings] = useState([]);
@@ -72,7 +75,9 @@ const Borrowings = () => {
           ? searchDate.toISOString().split("T")[0]
           : keyword;
 
-      const res = await fetchBorrowings(page, pagination.limit, searchBy, kw);
+      const resPromise = fetchBorrowings(page, pagination.limit, searchBy, kw);
+
+      const [res] = await Promise.all([resPromise, wait(600)]);
 
       setBorrowings(res.data);
       setPagination((prev) => ({
@@ -124,6 +129,36 @@ const Borrowings = () => {
         life: 2000,
       });
     }
+  };
+
+  const renderSkeletonRows = () => {
+    const skeletonRows = Array.from({ length: pagination.limit });
+
+    return skeletonRows.map((_, idx) => (
+      <tr key={`skeleton-${idx}`} className="border-b border-default">
+        <td className="px-6 py-4">
+          <Skeleton width="80%" height="1rem" />
+        </td>
+        <td className="px-6 py-4">
+          <Skeleton width="70%" height="1rem" />
+        </td>
+        <td className="px-6 py-4">
+          <Skeleton width="50%" height="1rem" />
+        </td>
+        <td className="px-6 py-4">
+          <Skeleton width="50%" height="1rem" />
+        </td>
+        <td className="px-6 py-4">
+          <Skeleton width="70px" height="1.5rem" />
+        </td>
+        <td className="px-6 py-4">
+          <div className="flex gap-2">
+            <Skeleton shape="circle" width="2rem" height="2rem" />
+            <Skeleton shape="circle" width="2rem" height="2rem" />
+          </div>
+        </td>
+      </tr>
+    ));
   };
 
   const totalPages = Math.ceil(pagination.total / pagination.limit);
@@ -220,11 +255,7 @@ const Borrowings = () => {
           </thead>
           <tbody>
             {loading ? (
-              <tr>
-                <td colSpan="6" className="text-center py-4">
-                  Loading...
-                </td>
-              </tr>
+              renderSkeletonRows()
             ) : borrowings.length === 0 ? (
               <tr>
                 <td colSpan="6" className="text-center py-4">
@@ -317,7 +348,7 @@ const Borrowings = () => {
           })}
 
           <Button
-            icon="pi pi-angle-double-left"
+            icon="pi pi-angle-double-right"
             size="small"
             outlined
             disabled={pagination.page === totalPages}

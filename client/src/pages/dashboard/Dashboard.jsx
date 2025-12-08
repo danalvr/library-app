@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "primereact/button";
+import { Skeleton } from "primereact/skeleton";
 
 import { getDashboardData } from "../../api/dashboard";
+
+import { wait } from "../../utils";
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(false);
@@ -25,7 +28,11 @@ const Dashboard = () => {
   const loadDashboard = async () => {
     try {
       setLoading(true);
-      const res = await getDashboardData();
+
+      const resPromise = await getDashboardData();
+
+      const [res] = await Promise.all([resPromise, wait(600)]);
+
       setStats(res.data);
     } catch (err) {
       console.error("Failed to fetch dashboard:", err);
@@ -38,6 +45,31 @@ const Dashboard = () => {
     navigate(path);
   };
 
+  const renderCardSkeleton = () => (
+    <div className="mt-2">
+      <Skeleton width="30%" height="1.4rem" />
+    </div>
+  );
+
+  const renderTableSkeleton = () => {
+    return Array.from({ length: 5 }).map((_, idx) => (
+      <tr key={idx} className="border-b border-default">
+        <td className="px-6 py-4">
+          <Skeleton width="80%" height="1rem" />
+        </td>
+        <td className="px-6 py-4">
+          <Skeleton width="70%" height="1rem" />
+        </td>
+        <td className="px-6 py-4">
+          <Skeleton width="60%" height="1rem" />
+        </td>
+        <td className="px-6 py-4">
+          <Skeleton width="50%" height="1rem" />
+        </td>
+      </tr>
+    ));
+  };
+
   return (
     <div>
       <h1 className="pl-2 my-2 text-3xl font-medium">Dashboard</h1>
@@ -45,32 +77,32 @@ const Dashboard = () => {
         <div className="grid grid-cols-4 gap-2">
           <div className="px-4 py-5 rounded-md border  border-slate-100 shadow-sm">
             <p>Total Books</p>
-            <p className="text-xl font-bold">
-              {loading ? "..." : stats.totalBooks}
+            <p className="mt-2 text-xl font-bold">
+              {loading ? renderCardSkeleton() : stats.totalBooks}
             </p>
           </div>
           <div className="px-4 py-5 rounded-md border  border-slate-100 shadow-sm">
             <p>Active Members</p>
-            <p className="text-xl font-bold">
-              {loading ? "..." : stats.activeMembers}
+            <p className="mt-2 text-xl font-bold">
+              {loading ? renderCardSkeleton() : stats.activeMembers}
             </p>
           </div>
           <div className="px-4 py-5 rounded-md border  border-slate-100 shadow-sm">
             <p>Total Books Borrowed</p>
-            <p className="text-xl font-bold">
-              {loading ? "..." : stats.totalBorrowings}
+            <p className="mt-2 text-xl font-bold">
+              {loading ? renderCardSkeleton() : stats.totalBorrowings}
             </p>
           </div>
           <div className="px-4 py-5 rounded-md border  border-slate-100 shadow-sm">
             <p>Overdue Borrowings</p>
-            <p className="text-xl font-bold">
-              {loading ? "..." : stats.overdueBorrowings}
+            <p className="mt-2 text-xl font-bold">
+              {loading ? renderCardSkeleton() : stats.overdueBorrowings}
             </p>
           </div>
         </div>
       </div>
       <div className="w-full flex items-start gap-2 p-2">
-        <div className="w-3/4 p-2">
+        <div className="w-[75%] p-2">
           <div>
             <h3 className="text-xl font-medium mb-3">Recent Borrowings</h3>
 
@@ -94,11 +126,7 @@ const Dashboard = () => {
                 </thead>
                 <tbody>
                   {loading ? (
-                    <tr>
-                      <td colSpan="4" className="px-6 py-4 text-center">
-                        Loading...
-                      </td>
-                    </tr>
+                    renderTableSkeleton()
                   ) : stats.recentBorrowings.length === 0 ? (
                     <tr>
                       <td colSpan="4" className="px-6 py-4 text-center">
@@ -127,7 +155,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="w-1/4 p-2">
+        <div className="w-[25%] p-2">
           <div className="w-full mt-3">
             <h3 className="text-xl font-medium mb-3">Quick Actions</h3>
             <div className="w-full flex flex-wrap items-center gap-2">

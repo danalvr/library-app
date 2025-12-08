@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { Button } from "primereact/button";
+import { Skeleton } from "primereact/skeleton";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 
@@ -10,6 +11,8 @@ import ModalNewAuthor from "../../components/molecules/authors/ModalNewAuthor";
 import ModalEditAuthor from "../../components/molecules/authors/ModalEditAuthor";
 
 import { fetchAuthors, deleteAuthor } from "../../api/authors";
+
+import { wait } from "../../utils";
 
 const Authors = () => {
   const [authors, setAuthors] = useState([]);
@@ -56,7 +59,10 @@ const Authors = () => {
   const loadAuthors = async (page = pagination.page) => {
     try {
       setLoading(true);
-      const res = await fetchAuthors(page, pagination.limit);
+      const resPromise = await fetchAuthors(page, pagination.limit);
+
+      const [res] = await Promise.all([resPromise, wait(300)]);
+
       setAuthors(res.data);
       setPagination((prev) => ({
         ...prev,
@@ -103,6 +109,22 @@ const Authors = () => {
     }
   };
 
+  const renderSkeletonRows = () => {
+    return Array.from({ length: pagination.limit }).map((_, idx) => (
+      <tr key={`skeleton-${idx}`} className="border-b border-default">
+        <td className="px-6 py-4">
+          <Skeleton width="60%" height="1rem" />
+        </td>
+        <td className="px-6 py-4">
+          <div className="flex gap-2">
+            <Skeleton shape="circle" width="2rem" height="2rem" />
+            <Skeleton shape="circle" width="2rem" height="2rem" />
+          </div>
+        </td>
+      </tr>
+    ));
+  };
+
   const totalPages = Math.ceil(pagination.total / pagination.limit);
 
   return (
@@ -143,11 +165,7 @@ const Authors = () => {
           </thead>
           <tbody>
             {loading ? (
-              <tr>
-                <td colSpan="3" className="px-6 py-4">
-                  Loading...
-                </td>
-              </tr>
+              renderSkeletonRows()
             ) : authors.length === 0 ? (
               <tr>
                 <td colSpan="3" className="px-6 py-4">
