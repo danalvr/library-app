@@ -2,8 +2,15 @@ import axios from "axios";
 
 const API_URL = "http://localhost:3000/borrowings";
 
-export const fetchBorrowings = async (page = 1, limit = 5) => {
-  const res = await axios.get(`${API_URL}?page=${page}&limit=${limit}`);
+export const fetchBorrowings = async (
+  page = 1,
+  limit = 5,
+  searchBy,
+  keyword
+) => {
+  const res = await axios.get(
+    `${API_URL}?page=${page}&limit=${limit}&searchBy=${searchBy}&keyword=${keyword}`
+  );
   return res.data;
 };
 

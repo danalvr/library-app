@@ -1,6 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 
 import { Button } from "primereact/button";
+import { Calendar } from "primereact/calendar";
+import { Dropdown } from "primereact/dropdown";
+import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
@@ -11,6 +14,9 @@ import { fetchBorrowings, deleteBorrowing } from "../../api/borrowings";
 
 const Borrowings = () => {
   const [borrowings, setBorrowings] = useState([]);
+  const [searchBy, setSearchBy] = useState("book");
+  const [keyword, setKeyword] = useState("");
+  const [searchDate, setSearchDate] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -31,6 +37,12 @@ const Borrowings = () => {
     loadBorrowings();
   }, []);
 
+  const filterOptions = [
+    { label: "Book Title", value: "book" },
+    { label: "Member Name", value: "member" },
+    { label: "Borrow Date", value: "date" },
+  ];
+
   const toggleModal = (category, id = null) => {
     if (id) setSelectedId(id);
     setShowModal((prev) => ({ ...prev, [category]: !prev[category] }));
@@ -39,7 +51,14 @@ const Borrowings = () => {
   const loadBorrowings = async (page = pagination.page) => {
     try {
       setLoading(true);
-      const res = await fetchBorrowings(page, pagination.limit);
+
+      const kw =
+        searchBy === "date" && searchDate
+          ? searchDate.toISOString().split("T")[0]
+          : keyword;
+
+      const res = await fetchBorrowings(page, pagination.limit, searchBy, kw);
+
       setBorrowings(res.data);
       setPagination((prev) => ({
         ...prev,
@@ -110,14 +129,55 @@ const Borrowings = () => {
         selectedId={selectedId}
       />
       <h1 className="text-2xl font-semibold mb-2">List Borrow Management</h1>
-      <Button
-        icon="pi pi-plus"
-        onClick={() => toggleModal("create")}
-        className="flex items-center gap-2"
-        size="small"
-      >
-        New Borrowing
-      </Button>
+      <div className="w-full flex items-center justify-between">
+        <Button
+          icon="pi pi-plus"
+          onClick={() => toggleModal("create")}
+          className="flex items-center gap-2"
+          size="small"
+        >
+          New Borrowing
+        </Button>
+        <div className="flex items-center gap-1">
+          <Dropdown
+            key={`dropdown-${searchBy}`}
+            options={filterOptions}
+            value={searchBy}
+            onChange={(e) => {
+              setSearchBy(e.value);
+              setKeyword("");
+              setSearchDate(null);
+            }}
+            className="w-40"
+          />
+          {searchBy === "date" ? (
+            <Calendar
+              key="date-picker"
+              value={searchDate}
+              onChange={(e) => setSearchDate(e.value)}
+              dateFormat="yy-mm-dd"
+              placeholder="Select date"
+              className="w-full"
+            />
+          ) : (
+            <InputText
+              key="text-search"
+              type="text"
+              placeholder="Search..."
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && loadBorrowings(1)}
+            />
+          )}
+
+          <Button
+            size="small"
+            severity="secondary"
+            icon="pi pi-search"
+            onClick={() => loadBorrowings(1)}
+          />
+        </div>
+      </div>
       <div class="mt-5 relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
         <table class="w-full text-sm text-left rtl:text-right text-body">
           <thead class="bg-neutral-secondary-soft border-b border-default">
