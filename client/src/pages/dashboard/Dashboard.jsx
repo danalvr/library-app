@@ -11,7 +11,7 @@ const Dashboard = () => {
   const [stats, setStats] = useState({
     totalBooks: 0,
     activeMembers: 0,
-    borrowedToday: 0,
+    totalBorrowings: 0,
     overdueBorrowings: 0,
     recentBorrowings: [],
   });
@@ -56,7 +56,7 @@ const Dashboard = () => {
             </p>
           </div>
           <div className="px-4 py-5 rounded-md border  border-slate-100 shadow-sm">
-            <p>Books Borrowed Today</p>
+            <p>Total Books Borrowed</p>
             <p className="text-xl font-bold">
               {loading ? "..." : stats.totalBorrowings}
             </p>
