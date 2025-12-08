@@ -160,7 +160,7 @@ const Sidebar = ({ children }) => {
                 to="/members"
                 className={({ isActive }) =>
                   `flex items-center px-2 py-1.5 text-body rounded-base hover:bg-[#f3f7fe] hover:text-cyan group ${
-                    isActive ? "font-bold text-cyan" : ""
+                    isActive ? "font-bold text-cyan bg-[#f3f7fe]" : ""
                   }`
                 }
               >
@@ -189,7 +189,7 @@ const Sidebar = ({ children }) => {
                 to="/borrowings"
                 className={({ isActive }) =>
                   `flex items-center px-2 py-1.5 text-body rounded-base hover:bg-[#f3f7fe] hover:text-cyan group ${
-                    isActive ? "font-bold text-cyan" : ""
+                    isActive ? "font-bold text-cyan bg-[#f3f7fe]" : ""
                   }`
                 }
               >
