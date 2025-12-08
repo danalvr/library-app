@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
+import { Button } from "primereact/button";
+
 import { getDashboardData } from "../../api/dashboard";
 
 const Dashboard = () => {
@@ -41,25 +43,25 @@ const Dashboard = () => {
       <h1 className="pl-2 my-2 text-3xl font-medium">Dashboard</h1>
       <div className="w-full p-2">
         <div className="grid grid-cols-4 gap-2">
-          <div className="px-4 py-5 rounded-md border-2 border-slate-100 shadow-md">
+          <div className="px-4 py-5 rounded-md border  border-slate-100 shadow-sm">
             <p>Total Books</p>
             <p className="text-xl font-bold">
               {loading ? "..." : stats.totalBooks}
             </p>
           </div>
-          <div className="px-4 py-5 rounded-md border-2 border-slate-100 shadow-md">
+          <div className="px-4 py-5 rounded-md border  border-slate-100 shadow-sm">
             <p>Active Members</p>
             <p className="text-xl font-bold">
               {loading ? "..." : stats.activeMembers}
             </p>
           </div>
-          <div className="px-4 py-5 rounded-md border-2 border-slate-100 shadow-md">
+          <div className="px-4 py-5 rounded-md border  border-slate-100 shadow-sm">
             <p>Books Borrowed Today</p>
             <p className="text-xl font-bold">
               {loading ? "..." : stats.totalBorrowings}
             </p>
           </div>
-          <div className="px-4 py-5 rounded-md border-2 border-slate-100 shadow-md">
+          <div className="px-4 py-5 rounded-md border  border-slate-100 shadow-sm">
             <p>Overdue Borrowings</p>
             <p className="text-xl font-bold">
               {loading ? "..." : stats.overdueBorrowings}
@@ -67,14 +69,14 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      <div className="w-full flex items-start gap-2 p-2 mt-4">
+      <div className="w-full flex items-start gap-2 p-2">
         <div className="w-3/4 p-2">
           <div>
             <h3 className="text-xl font-medium mb-3">Recent Borrowings</h3>
 
             <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
-              <table class="w-full text-sm text-left rtl:text-right text-body">
-                <thead class="bg-neutral-secondary-soft border-b border-default">
+              <table class="w-full text-sm text-left rtl:text-right text-body shadow-md">
+                <thead class="bg-slate-200 border-b border-default">
                   <tr>
                     <th scope="col" class="px-6 py-3 font-medium">
                       Member
@@ -126,43 +128,33 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="w-1/4 p-2">
-          <div className="border border-slate-200 p-4 px-5 rounded-md shadow-sm">
-            <h3 className="text-xl font-medium mb-3">AI Book Insights</h3>
-            <ul className="list-disc list-inside mb-5">
-              <li>Your library's most borrowed genre this month</li>
-              <li>Books predicted to be high demand</li>
-            </ul>
-            <button className="w-full bg-blue-500 p-1 rounded-md text-white">
-              Generate Recommendations
-            </button>
-          </div>
           <div className="w-full mt-3">
             <h3 className="text-xl font-medium mb-3">Quick Actions</h3>
             <div className="w-full flex flex-wrap items-center gap-2">
-              <button
+              <Button
+                label="Add Author"
+                size="small"
                 className="border-2 text-sm border-slate-200 p-1 px-2 rounded-md"
                 onClick={() => goTo("/authors?modal=create")}
-              >
-                Add Author
-              </button>
-              <button
+              />
+              <Button
+                label="Add Book"
+                size="small"
                 className="border-2 text-sm border-slate-200 p-1 px-2 rounded-md"
                 onClick={() => goTo("/books?modal=create")}
-              >
-                Add Book
-              </button>
-              <button
+              />
+              <Button
+                label="Add Member"
+                size="small"
                 className="border-2 text-sm border-slate-200 p-1 px-2 rounded-md"
                 onClick={() => goTo("/members?modal=create")}
-              >
-                Add Member
-              </button>
-              <button
+              />
+              <Button
+                label="Add Borrowing"
+                size="small"
                 className="border-2 text-sm border-slate-200 p-1 px-2 rounded-md"
                 onClick={() => goTo("/borrowings?modal=create")}
-              >
-                New Borrowing
-              </button>
+              />
             </div>
           </div>
         </div>

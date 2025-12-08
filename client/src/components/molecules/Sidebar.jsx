@@ -1,5 +1,8 @@
 import { useState } from "react";
+
 import { NavLink } from "react-router-dom";
+
+import { Button } from "primereact/button";
 
 const Sidebar = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -54,7 +57,7 @@ const Sidebar = ({ children }) => {
               alt="Flowbite Logo"
             />
             <span class="self-center text-lg text-heading font-semibold whitespace-nowrap">
-              LibraryPro
+              LibraryApp
             </span>
           </a>
           <ul class="space-y-2 font-medium">
@@ -216,9 +219,12 @@ const Sidebar = ({ children }) => {
       <div className="sm:ml-64">
         <nav className="border border-slate-200 p-4">
           <div className="w-full flex justify-end">
-            <button className="border p-2 rounded-md border-slate-300 text-slate-700 text-sm">
-              Register
-            </button>
+            <Button
+              label="Sign Up"
+              size="small"
+              outlined
+              className="border p-2 rounded-md border-slate-300 text-slate-700 text-sm"
+            />
           </div>
         </nav>
         <div className="p-4">{children}</div>
