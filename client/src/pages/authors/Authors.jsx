@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 
+import { useLocation, useNavigate } from "react-router-dom";
+
 import { Button } from "primereact/button";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 
 import ModalNewAuthor from "../../components/molecules/authors/ModalNewAuthor";
 import ModalEditAuthor from "../../components/molecules/authors/ModalEditAuthor";
+
 import { fetchAuthors, deleteAuthor } from "../../api/authors";
 
 const Authors = () => {
@@ -25,6 +28,19 @@ const Authors = () => {
   });
 
   const toast = useRef(null);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const q = new URLSearchParams(location.search);
+    const isCreate = q.get("modal") === "create";
+
+    if (isCreate) {
+      setShowModal((prev) => ({ ...prev, create: true }));
+      navigate("/authors", { replace: true });
+    }
+  }, [location.search, navigate]);
 
   useEffect(() => {
     loadAuthors(1);

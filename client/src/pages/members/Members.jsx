@@ -1,11 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 
+import { useLocation, useNavigate } from "react-router-dom";
+
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
 import ModalNewMember from "../../components/molecules/members/ModalNewMember";
 import ModalEditMember from "../../components/molecules/members/ModalEditMember";
+
 import { fetchMembers, deleteMember } from "../../api/members";
 
 const Members = () => {
@@ -23,7 +26,21 @@ const Members = () => {
   const [selectedId, setSelectedId] = useState(null);
 
   const [loading, setLoading] = useState(false);
+
   const toast = useRef(null);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const q = new URLSearchParams(location.search);
+    const isCreate = q.get("modal") === "create";
+
+    if (isCreate) {
+      setShowModal((prev) => ({ ...prev, create: true }));
+      navigate("/members", { replace: true });
+    }
+  }, [location.search, navigate]);
 
   useEffect(() => {
     loadMembers(1);

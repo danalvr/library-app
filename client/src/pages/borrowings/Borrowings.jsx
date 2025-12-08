@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 
+import { useLocation, useNavigate } from "react-router-dom";
+
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
@@ -32,6 +34,19 @@ const Borrowings = () => {
   });
 
   const toast = useRef(null);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const q = new URLSearchParams(location.search);
+    const isCreate = q.get("modal") === "create";
+
+    if (isCreate) {
+      setShowModal((prev) => ({ ...prev, create: true }));
+      navigate("/borrowings", { replace: true });
+    }
+  }, [location.search, navigate]);
 
   useEffect(() => {
     loadBorrowings();

@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 
+import { useLocation, useNavigate } from "react-router-dom";
+
 import { Button } from "primereact/button";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
@@ -26,6 +28,19 @@ const Books = () => {
   });
 
   const toast = useRef(null);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const q = new URLSearchParams(location.search);
+    const isCreate = q.get("modal") === "create";
+
+    if (isCreate) {
+      setShowModal((prev) => ({ ...prev, create: true }));
+      navigate("/books", { replace: true });
+    }
+  }, [location.search, navigate]);
 
   useEffect(() => {
     loadBooks();
