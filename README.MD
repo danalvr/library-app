@@ -60,3 +60,25 @@ This system includes authentication, dashboard analytics, and full CRUD modules 
 | Pagination                |   ✅   |
 | Skeleton Loading          |   ✅   |
 | Toast Notification System |   ✅   |
+
+## Documentation Project
+
+| Dashboard                               |
+| --------------------------------------- |
+| ![Image 1](assets/images/dashboard.jpg) |
+
+| Borrowings                               | Add Borrowings                               |
+| ---------------------------------------- | -------------------------------------------- |
+| ![Image 1](assets/images/borrowings.jpg) | ![Image 2](assets/images/borrowings_add.jpg) |
+
+| Books                               | Add Books                               |
+| ----------------------------------- | --------------------------------------- |
+| ![Image 1](assets/images/books.jpg) | ![Image 2](assets/images/books_add.jpg) |
+
+| Members                               | Add Members                               |
+| ------------------------------------- | ----------------------------------------- |
+| ![Image 1](assets/images/members.jpg) | ![Image 2](assets/images/members_add.jpg) |
+
+| Authors                               | Add Authors                               |
+| ------------------------------------- | ----------------------------------------- |
+| ![Image 1](assets/images/authors.jpg) | ![Image 2](assets/images/authors_add.jpg) |
