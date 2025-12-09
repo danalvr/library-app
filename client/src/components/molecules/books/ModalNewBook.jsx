@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
+import { Toast } from "primereact/toast";
 
 import BaseModal from "../../elements/BaseModal";
 
@@ -20,6 +21,8 @@ const ModalNewBook = ({ open, onClose, onSuccess }) => {
   const [authors, setAuthors] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const toast = useRef(null);
+
   useEffect(() => {
     if (open) loadAuthors();
   }, [open]);
@@ -30,7 +33,12 @@ const ModalNewBook = ({ open, onClose, onSuccess }) => {
       setAuthors(res);
     } catch (err) {
       console.error(err);
-      alert("Failed to load authors");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: err.response?.data?.message || "Failed to load books",
+        life: 2000,
+      });
     }
   };
 
@@ -44,7 +52,12 @@ const ModalNewBook = ({ open, onClose, onSuccess }) => {
 
   const handleSave = async () => {
     if (!title.trim() || !authorId || !publishingYear.trim()) {
-      alert("Title, Author & Publishing Year required");
+      toast.current.show({
+        severity: "warn",
+        summary: "Warning",
+        detail: "Title, Author & Publishing Year required",
+        life: 2000,
+      });
       return;
     }
 
@@ -61,9 +74,14 @@ const ModalNewBook = ({ open, onClose, onSuccess }) => {
 
       resetForm();
       onClose();
-      onSuccess();
+      onSuccess("Book created successfully!");
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to create book");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: err.response?.data?.message || "Failed to create book",
+        life: 2000,
+      });
     } finally {
       setLoading(false);
     }
@@ -72,6 +90,7 @@ const ModalNewBook = ({ open, onClose, onSuccess }) => {
   if (!open) return null;
   return (
     <BaseModal open={open}>
+      <Toast ref={toast} />
       <div className="modal-main fixed w-full h-full md:h-[500px] md:w-[690px] px-8 py-8 top-0 md:top-25 left-0 md:left-[25%] flex flex-col items-center rounded-xl bg-white overflow-auto">
         <div className="w-full flex items-center justify-between">
           <h1 className="text-xl font-semibold">Add New Book</h1>

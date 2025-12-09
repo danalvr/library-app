@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
+import { Toast } from "primereact/toast";
 
 import BaseModal from "../../elements/BaseModal";
 
@@ -19,6 +20,8 @@ const ModalEditBook = ({ open, onClose, selectedId, onSuccess }) => {
 
   const [authors, setAuthors] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const toast = useRef(null);
 
   const resetForm = () => {
     setTitle("");
@@ -49,7 +52,12 @@ const ModalEditBook = ({ open, onClose, selectedId, onSuccess }) => {
       setDescription(data.description || "");
       setAuthorId(data.author.id);
     } catch (err) {
-      alert("Failed load book data");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed load book data",
+        life: 2000,
+      });
     }
   };
 
@@ -64,7 +72,12 @@ const ModalEditBook = ({ open, onClose, selectedId, onSuccess }) => {
 
   const handleSave = async () => {
     if (!title.trim() || !authorId || !publishingYear) {
-      alert("Title, Author & Publishing Year required");
+      toast.current.show({
+        severity: "warn",
+        summary: "Warning",
+        detail: "Title, Author & Publishing Year required",
+        life: 2000,
+      });
       return;
     }
 
@@ -79,9 +92,14 @@ const ModalEditBook = ({ open, onClose, selectedId, onSuccess }) => {
       });
 
       onClose();
-      onSuccess();
+      onSuccess("Book updated successfully!");
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to update book");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: err.response?.data?.message || "Failed to create book",
+        life: 2000,
+      });
     } finally {
       setLoading(false);
     }
@@ -91,6 +109,7 @@ const ModalEditBook = ({ open, onClose, selectedId, onSuccess }) => {
 
   return (
     <BaseModal open={open}>
+      <Toast ref={toast} />
       <div className="modal-main fixed w-full h-full md:h-[500px] md:w-[690px] px-8 py-8 top-0 md:top-25 left-0 md:left-[25%] flex flex-col items-center rounded-xl bg-white overflow-auto">
         <div className="w-full flex items-center justify-between">
           <h1 className="text-xl font-semibold">Edit Book</h1>

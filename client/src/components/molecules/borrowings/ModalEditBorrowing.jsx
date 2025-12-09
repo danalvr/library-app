@@ -38,13 +38,29 @@ const ModalEditBorrowing = ({ open, onClose, selectedId, onSuccess }) => {
   }, [open, selectedId]);
 
   const loadBooks = async () => {
-    const data = await fetchAllBooks();
-    setBooks(data);
+    try {
+      const data = await fetchAllBooks();
+      setBooks(data);
+    } catch {
+      toastRef.current.show({
+        severity: "error",
+        summary: "Failed",
+        detail: "Failed to load books",
+      });
+    }
   };
 
   const loadMembers = async () => {
-    const data = await fetchAllMembers();
-    setMembers(data);
+    try {
+      const data = await fetchAllMembers();
+      setMembers(data);
+    } catch {
+      toastRef.current.show({
+        severity: "error",
+        summary: "Failed",
+        detail: "Failed to load members",
+      });
+    }
   };
 
   const loadDetail = async () => {
@@ -100,7 +116,7 @@ const ModalEditBorrowing = ({ open, onClose, selectedId, onSuccess }) => {
       });
 
       onClose();
-      if (onSuccess) onSuccess();
+      if (onSuccess) onSuccess("Borrowing updated successfully!");
     } catch {
       toastRef.current.show({
         severity: "error",
@@ -131,7 +147,7 @@ const ModalEditBorrowing = ({ open, onClose, selectedId, onSuccess }) => {
       });
 
       onClose();
-      if (onSuccess) onSuccess();
+      if (onSuccess) onSuccess("Returning successfully!");
     } catch {
       toastRef.current.show({
         severity: "error",

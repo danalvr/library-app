@@ -88,7 +88,12 @@ const Borrowings = () => {
       }));
     } catch (err) {
       console.error(err);
-      alert("Failed to load borrowings");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to load borrowings",
+        life: 2000,
+      });
     } finally {
       setLoading(false);
     }
@@ -170,12 +175,28 @@ const Borrowings = () => {
       <ModalNewBorrowing
         open={showModal.create}
         onClose={() => toggleModal("create")}
-        onSuccess={loadBorrowings}
+        onSuccess={(msg) => {
+          loadBorrowings();
+          toast.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: msg,
+            life: 2000,
+          });
+        }}
       />
       <ModalEditBorrowing
         open={showModal.edit}
         onClose={() => toggleModal("edit")}
-        onSuccess={loadBorrowings}
+        onSuccess={(msg) => {
+          loadBorrowings();
+          toast.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: msg,
+            life: 2000,
+          });
+        }}
         selectedId={selectedId}
       />
       <h1 className="text-2xl font-semibold mb-2">List Borrow Management</h1>

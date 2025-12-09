@@ -35,6 +35,12 @@ const Dashboard = () => {
 
       setStats(res.data);
     } catch (err) {
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: err.response?.data?.message || "Failed to fetch dashboard",
+        life: 2000,
+      });
       console.error("Failed to fetch dashboard:", err);
     } finally {
       setLoading(false);

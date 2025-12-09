@@ -108,7 +108,7 @@ const ModalNewBorrowing = ({ open, onClose, onSuccess }) => {
         detail: "Borrowing saved",
       });
       onClose();
-      if (onSuccess) onSuccess();
+      if (onSuccess) onSuccess("Borrowing created successfully!");
     } catch (err) {
       toastRef.current.show({
         severity: "error",

@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { Toast } from "primereact/toast";
 
 import BaseModal from "../../elements/BaseModal";
 import { getMemberById, updateMember } from "../../../api/members";
@@ -11,6 +12,8 @@ const ModalEditMember = ({ open, onClose, selectedId, onSuccess }) => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const toast = useRef(null);
 
   const loadDetail = async () => {
     if (!selectedId) return;
@@ -23,7 +26,12 @@ const ModalEditMember = ({ open, onClose, selectedId, onSuccess }) => {
       setPhone(data.phone || "");
     } catch (err) {
       console.error(err);
-      alert("Failed to load member data");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to load member data",
+        life: 2000,
+      });
     }
   };
 
@@ -33,7 +41,12 @@ const ModalEditMember = ({ open, onClose, selectedId, onSuccess }) => {
 
   const handleSave = async () => {
     if (!name.trim() || !email.trim()) {
-      alert("Name & Email are required");
+      toast.current.show({
+        severity: "warn",
+        summary: "Warning",
+        detail: "Name & Email are required",
+        life: 2000,
+      });
       return;
     }
 
@@ -42,9 +55,14 @@ const ModalEditMember = ({ open, onClose, selectedId, onSuccess }) => {
       await updateMember(selectedId, { name, email, phone });
 
       onClose();
-      onSuccess(); // Refresh members list
+      onSuccess("Member updated successfully!");
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to update member");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: err.response?.data?.message || "Failed to update member",
+        life: 2000,
+      });
     } finally {
       setLoading(false);
     }
@@ -53,6 +71,7 @@ const ModalEditMember = ({ open, onClose, selectedId, onSuccess }) => {
   if (!open) return null;
   return (
     <BaseModal open={open}>
+      <Toast ref={toast} />
       <div className="modal-main fixed w-full h-full md:h-[500px] md:w-[690px] px-8 py-8 top-0 md:top-25 left-0 md:left-[25%] flex flex-col items-center rounded-xl bg-white overflow-auto">
         <div className="w-full flex items-center justify-between">
           <h1 className="text-xl font-semibold">Edit Member</h1>

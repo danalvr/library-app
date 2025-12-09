@@ -140,14 +140,30 @@ const Members = () => {
       <ModalNewMember
         open={showModal.create}
         onClose={() => toggleModal("create")}
-        onSuccess={loadMembers}
+        onSuccess={(msg) => {
+          loadMembers();
+          toast.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: msg,
+            life: 2000,
+          });
+        }}
       />
 
       <ModalEditMember
         open={showModal.edit}
         onClose={() => toggleModal("edit")}
         selectedId={selectedId}
-        onSuccess={loadMembers}
+        onSuccess={(msg) => {
+          loadMembers();
+          toast.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: msg,
+            life: 2000,
+          });
+        }}
       />
 
       <h1 className="text-2xl font-semibold mb-2">List Members</h1>

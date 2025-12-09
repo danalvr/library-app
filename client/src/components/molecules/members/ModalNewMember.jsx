@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { Toast } from "primereact/toast";
 
 import BaseModal from "../../elements/BaseModal";
 
@@ -13,9 +14,16 @@ const ModalNewMember = ({ open, onClose, onSuccess }) => {
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const toast = useRef(null);
+
   const handleSave = async () => {
     if (!name.trim() || !email.trim()) {
-      alert("Name and Email are required");
+      toast.current.show({
+        severity: "warn",
+        summary: "Warning",
+        detail: "Name and Email are required",
+        life: 2000,
+      });
       return;
     }
 
@@ -29,17 +37,24 @@ const ModalNewMember = ({ open, onClose, onSuccess }) => {
       setPhone("");
 
       onClose();
-      onSuccess();
+      onSuccess("Member created successfully!");
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to create member");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: err.response?.data?.message || "Failed to create member",
+        life: 2000,
+      });
     } finally {
       setLoading(false);
     }
   };
 
   if (!open) return null;
+
   return (
     <BaseModal open={open}>
+      <Toast ref={toast} />
       <div className="modal-main fixed w-full h-full md:h-[500px] md:w-[690px] px-8 py-8 top-0 md:top-25 left-0 md:left-[25%] flex flex-col items-center rounded-xl bg-white overflow-auto">
         <div className="w-full flex items-center justify-between">
           <h1 className="text-xl font-semibold">Add New Member</h1>

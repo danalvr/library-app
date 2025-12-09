@@ -72,7 +72,12 @@ const Books = () => {
       }));
     } catch (err) {
       console.error(err);
-      alert("Failed to load authors");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to load books",
+        life: 2000,
+      });
     } finally {
       setLoading(false);
     }
@@ -140,13 +145,29 @@ const Books = () => {
       <ModalNewBook
         open={showModal.create}
         onClose={() => toggleModal("create")}
-        onSuccess={loadBooks}
+        onSuccess={(msg) => {
+          loadBooks();
+          toast.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: msg,
+            life: 2000,
+          });
+        }}
       />
       <ModalEditBook
         open={showModal.edit}
         onClose={() => toggleModal("edit")}
         selectedId={selectedId}
-        onSuccess={loadBooks}
+        onSuccess={(msg) => {
+          loadBooks();
+          toast.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: msg,
+            life: 2000,
+          });
+        }}
       />
       <h1 className="text-2xl font-semibold mb-2">List Books</h1>
       <Button

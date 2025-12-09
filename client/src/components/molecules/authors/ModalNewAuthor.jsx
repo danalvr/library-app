@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRef, useState } from "react";
 
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { Toast } from "primereact/toast";
 
 import BaseModal from "../../elements/BaseModal";
 
@@ -12,9 +12,16 @@ const ModalNewAuthor = ({ open, onClose, onSuccess }) => {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const toast = useRef(null);
+
   const handleSave = async () => {
     if (!name.trim()) {
-      alert("Name is required");
+      toast.current.show({
+        severity: "warn",
+        summary: "Warning",
+        detail: "Name is required",
+        life: 2000,
+      });
       return;
     }
 
@@ -23,9 +30,14 @@ const ModalNewAuthor = ({ open, onClose, onSuccess }) => {
       await createAuthor({ name });
       setName("");
       onClose();
-      onSuccess();
+      onSuccess("Author created successfully!");
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to create author");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: err.response?.data?.message || "Failed to create author",
+        life: 2000,
+      });
     } finally {
       setLoading(false);
     }
@@ -35,6 +47,7 @@ const ModalNewAuthor = ({ open, onClose, onSuccess }) => {
 
   return (
     <BaseModal open={open}>
+      <Toast ref={toast} />
       <div className="modal-main fixed w-full h-full md:h-[500px] md:w-[690px] px-8 py-8 top-0 md:top-25 left-0 md:left-[25%] flex flex-col items-center rounded-xl bg-white overflow-auto">
         <div className="w-full flex items-center justify-between">
           <h1 className="text-xl font-semibold">Add New Author</h1>

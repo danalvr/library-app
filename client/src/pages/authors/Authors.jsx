@@ -72,7 +72,12 @@ const Authors = () => {
       }));
     } catch (err) {
       console.error(err);
-      alert("Failed to load authors");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to load authors",
+        life: 2000,
+      });
     } finally {
       setLoading(false);
     }
@@ -134,13 +139,29 @@ const Authors = () => {
       <ModalNewAuthor
         open={showModal.create}
         onClose={() => toggleModal("create")}
-        onSuccess={loadAuthors}
+        onSuccess={(msg) => {
+          loadAuthors();
+          toast.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: msg,
+            life: 2000,
+          });
+        }}
       />
       <ModalEditAuthor
         open={showModal.edit}
         onClose={() => toggleModal("edit")}
         selectedId={selectedId}
-        onSuccess={loadAuthors}
+        onSuccess={(msg) => {
+          loadAuthors();
+          toast.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: msg,
+            life: 2000,
+          });
+        }}
       />
       <h1 className="text-2xl font-semibold mb-2">List Authors</h1>
       <Button

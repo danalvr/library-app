@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { Toast } from "primereact/toast";
 
 import BaseModal from "../../elements/BaseModal";
 
@@ -11,13 +12,20 @@ const ModalEditAuthor = ({ open, onClose, selectedId, onSuccess }) => {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const toast = useRef(null);
+
   const loadDetail = async () => {
     if (!selectedId) return;
     try {
       const res = await getAuthorById(selectedId);
       setName(res.name);
     } catch (err) {
-      alert("Failed to load author data");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: err.response?.data?.message || "Failed to load author data",
+        life: 2000,
+      });
     }
   };
 
@@ -27,7 +35,12 @@ const ModalEditAuthor = ({ open, onClose, selectedId, onSuccess }) => {
 
   const handleSave = async () => {
     if (!name.trim()) {
-      alert("Name is required");
+      toast.current.show({
+        severity: "warn",
+        summary: "Warning",
+        detail: "Name is required",
+        life: 2000,
+      });
       return;
     }
 
@@ -35,9 +48,14 @@ const ModalEditAuthor = ({ open, onClose, selectedId, onSuccess }) => {
       setLoading(true);
       await updateAuthor(selectedId, { name });
       onClose();
-      onSuccess();
+      onSuccess("Author updated successfully!");
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to update author");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: err.response?.data?.message || "Failed to update author",
+        life: 2000,
+      });
     } finally {
       setLoading(false);
     }
@@ -47,6 +65,7 @@ const ModalEditAuthor = ({ open, onClose, selectedId, onSuccess }) => {
 
   return (
     <BaseModal open={open}>
+      <Toast ref={toast} />
       <div className="modal-main fixed w-full h-full md:h-[500px] md:w-[690px] px-8 py-8 top-0 md:top-25 left-0 md:left-[25%] flex flex-col items-center rounded-xl bg-white overflow-auto">
         <div className="w-full flex items-center justify-between">
           <h1 className="text-xl font-semibold">Edit Author</h1>
