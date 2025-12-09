@@ -179,54 +179,74 @@ const Borrowings = () => {
         selectedId={selectedId}
       />
       <h1 className="text-2xl font-semibold mb-2">List Borrow Management</h1>
-      <div className="w-full flex items-center justify-between">
-        <Button
-          icon="pi pi-plus"
-          onClick={() => toggleModal("create")}
-          className="flex items-center gap-2"
-          size="small"
-        >
-          New Borrowing
-        </Button>
-        <div className="flex items-center gap-1">
-          <Dropdown
-            key={`dropdown-${searchBy}`}
-            options={filterOptions}
-            value={searchBy}
-            onChange={(e) => {
-              setSearchBy(e.value);
-              setKeyword("");
-              setSearchDate(null);
-            }}
-            className="w-40"
-          />
-          {searchBy === "date" ? (
-            <Calendar
-              key="date-picker"
-              value={searchDate}
-              onChange={(e) => setSearchDate(e.value)}
-              dateFormat="yy-mm-dd"
-              placeholder="Select date"
-              className="w-full"
-            />
-          ) : (
-            <InputText
-              key="text-search"
-              type="text"
-              placeholder="Search..."
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && loadBorrowings(1)}
-            />
-          )}
-
+      <div className="w-full flex flex-col gap-1 items-start justify-between md:flex-row md:items-center md:gap-0">
+        <div className="flex items-center gap-[1px]">
           <Button
+            icon="pi pi-plus"
+            onClick={() => toggleModal("create")}
+            className="flex items-center gap-2"
             size="small"
-            severity="secondary"
-            outlined
-            icon="pi pi-search"
-            onClick={() => loadBorrowings(1)}
-          />
+          >
+            New Borrowing
+          </Button>
+          <div className="md:hidden">
+            <Dropdown
+              key={`dropdown-${searchBy}`}
+              options={filterOptions}
+              value={searchBy}
+              onChange={(e) => {
+                setSearchBy(e.value);
+                setKeyword("");
+                setSearchDate(null);
+              }}
+              className="w-40"
+            />
+          </div>
+        </div>
+        <div className="flex flex-col items-start gap-1 md:flex-row md:items-center">
+          <div className="hidden md:block">
+            <Dropdown
+              key={`dropdown-${searchBy}`}
+              options={filterOptions}
+              value={searchBy}
+              onChange={(e) => {
+                setSearchBy(e.value);
+                setKeyword("");
+                setSearchDate(null);
+              }}
+              className="w-40"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            {searchBy === "date" ? (
+              <Calendar
+                key="date-picker"
+                value={searchDate}
+                onChange={(e) => setSearchDate(e.value)}
+                dateFormat="yy-mm-dd"
+                placeholder="Select date"
+                className="w-full"
+              />
+            ) : (
+              <InputText
+                key="text-search"
+                type="text"
+                placeholder="Search..."
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && loadBorrowings(1)}
+              />
+            )}
+
+            <Button
+              size="small"
+              severity="secondary"
+              outlined
+              icon="pi pi-search"
+              onClick={() => loadBorrowings(1)}
+            />
+          </div>
         </div>
       </div>
       <div class="mt-5 relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
@@ -310,7 +330,7 @@ const Borrowings = () => {
           </tbody>
         </table>
       </div>
-      <div className="mt-4 flex items-center justify-between">
+      <div className="mt-4 flex flex-col-reverse gap-2 items-center justify-between md:flex-row md:gap-0">
         <p className="text-sm text-gray-600">
           Page {pagination.page} of {totalPages}
         </p>

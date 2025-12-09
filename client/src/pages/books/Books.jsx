@@ -222,7 +222,7 @@ const Books = () => {
           </tbody>
         </table>
       </div>
-      <div className="mt-4 flex items-center justify-between">
+      <div className="mt-4 flex flex-col-reverse gap-2 items-center justify-between md:flex-row md:gap-0">
         <p className="text-sm text-gray-600">
           Page {pagination.page} of {totalPages}
         </p>

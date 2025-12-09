@@ -74,7 +74,7 @@ const Dashboard = () => {
     <div>
       <h1 className="pl-2 my-2 text-3xl font-medium">Dashboard</h1>
       <div className="w-full p-2">
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           <div className="px-4 py-5 rounded-md border  border-slate-100 shadow-sm">
             <p>Total Books</p>
             <p className="mt-2 text-xl font-bold">
@@ -101,8 +101,8 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      <div className="w-full flex items-start gap-2 p-2">
-        <div className="w-[75%] p-2">
+      <div className="w-full flex flex-col-reverse items-start gap-2 p-2 md:flex-row md:item-start">
+        <div className="w-full p-2 md:w-[75%]">
           <div>
             <h3 className="text-xl font-medium mb-3">Recent Borrowings</h3>
 
@@ -155,7 +155,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="w-[25%] p-2">
+        <div className="w-full p-2 md:w-[25%]">
           <div className="w-full mt-3">
             <h3 className="text-xl font-medium mb-3">Quick Actions</h3>
             <div className="w-full flex flex-wrap items-center gap-2">
