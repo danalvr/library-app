@@ -6,6 +6,8 @@ import { Button } from "primereact/button";
 
 import { useAuth } from "../../context/AuthContext";
 
+import { icons } from "../../constants";
+
 const Sidebar = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -63,15 +65,11 @@ const Sidebar = ({ children }) => {
         } sm:translate-x-0`}
       >
         <div class="h-full px-3 py-4 overflow-y-auto bg-neutral-primary-soft border-e border-default">
-          <a href="https://flowbite.com/" class="flex items-center ps-2.5 mb-5">
-            <img
-              src="https://flowbite.com/docs/images/logo.svg"
-              class="h-6 me-3"
-              alt="Flowbite Logo"
-            />
-            <span class="self-center text-lg text-heading font-semibold whitespace-nowrap">
-              LibraryApp
-            </span>
+          <a href="https://danalvr.com/" class="flex items-center ps-2.5 mb-5">
+            <img src={icons.logo} class="h-6 me-3" alt="Logo" />
+            <p class="self-center text-lg text-heading font-semibold whitespace-nowrap">
+              Library<span className="text-cyan-700 font-bold">App</span>
+            </p>
           </a>
           <ul class="space-y-2 font-medium">
             <li>
