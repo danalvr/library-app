@@ -1,13 +1,13 @@
-const express = require("express");
-const { bookController } = require("./book.controller");
-// const { requireAuth } = require("../../middleware/auth.middleware");
+const router = require("express").Router();
 
-const router = express.Router();
+const { bookController } = require("./book.controller");
+
+const authMiddleware = require("../../middleware/auth");
 
 router.get("/", bookController.list);
 router.get("/:id", bookController.detail);
-router.post("/", bookController.create);
-router.put("/:id", bookController.update);
-router.delete("/:id", bookController.delete);
+router.post("/", authMiddleware, bookController.create);
+router.put("/:id", authMiddleware, bookController.update);
+router.delete("/:id", authMiddleware, bookController.delete);
 
 module.exports = router;
