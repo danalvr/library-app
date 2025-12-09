@@ -13,8 +13,15 @@ exports.dashboardRepository = {
     return prisma.borrowings.count();
   },
   countOverdueBorrowings() {
+    const now = new Date();
+
     return prisma.borrowings.count({
-      where: { status: "OVERDUE" },
+      where: {
+        returnDate: null,
+        dueDate: {
+          lt: now,
+        },
+      },
     });
   },
   recentBorrowings() {
