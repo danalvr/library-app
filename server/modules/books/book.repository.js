@@ -8,7 +8,7 @@ exports.bookRepository = {
       where,
       skip,
       take,
-      orderBy: { createdAt: "asc" },
+      orderBy: { createdAt: "desc" },
       select: {
         id: true,
         title: true,
@@ -27,7 +27,7 @@ exports.bookRepository = {
 
   findAllWithoutPagination() {
     return prisma.books.findMany({
-      orderBy: { createdAt: "asc" },
+      orderBy: { createdAt: "desc" },
     });
   },
 

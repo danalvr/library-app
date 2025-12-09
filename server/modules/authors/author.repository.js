@@ -7,13 +7,13 @@ exports.authorRepository = {
     return prisma.authors.findMany({
       skip,
       take,
-      orderBy: { createdAt: "asc" },
+      orderBy: { createdAt: "desc" },
     });
   },
 
   findAllWithoutPagination() {
     return prisma.authors.findMany({
-      orderBy: { createdAt: "asc" },
+      orderBy: { createdAt: "desc" },
     });
   },
 

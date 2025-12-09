@@ -32,7 +32,7 @@ exports.borrowingRepository = {
       skip,
       take,
       where,
-      orderBy: { createdAt: "asc" },
+      orderBy: { createdAt: "desc" },
       select: {
         id: true,
         status: true,

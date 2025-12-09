@@ -7,13 +7,13 @@ exports.memberRepository = {
     return prisma.members.findMany({
       skip,
       take,
-      orderBy: { createdAt: "asc" },
+      orderBy: { createdAt: "desc" },
     });
   },
 
   findAllWithoutPagination() {
     return prisma.members.findMany({
-      orderBy: { createdAt: "asc" },
+      orderBy: { createdAt: "desc" },
     });
   },
 
