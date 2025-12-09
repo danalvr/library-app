@@ -9,12 +9,12 @@ Before getting started, make sure you have the following prerequisites installed
 - Node.js 16.16.0 or higher
 - npm 8.11.0 or higher
 
-### Frontend (React)
+### Backend (Node Express)
 
-Navigate to directory frontend
+Navigate to directory backend
 
 ```
-cd client
+cd server
 ```
 
 Install package
