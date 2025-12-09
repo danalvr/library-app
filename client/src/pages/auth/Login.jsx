@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { InputText } from "primereact/inputtext";
-import { Password } from "primereact/password";
 import { Button } from "primereact/button";
 
 import { loginRequest } from "../../api/auth";
@@ -40,8 +39,8 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <Password
-            toggleMask
+          <InputText
+            type="password"
             className="w-full"
             placeholder="Password"
             feedback={false}

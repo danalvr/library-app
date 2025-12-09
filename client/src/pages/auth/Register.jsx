@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { InputText } from "primereact/inputtext";
-import { Password } from "primereact/password";
 import { Button } from "primereact/button";
 
 import { registerRequest } from "../../api/auth";
@@ -31,15 +30,13 @@ const Register = () => {
 
         <div className="flex flex-col gap-2">
           <InputText
-            className="w-full"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <Password
-            toggleMask
-            className="w-full"
+          <InputText
+            type="password"
             placeholder="Password"
             feedback={false}
             value={password}
