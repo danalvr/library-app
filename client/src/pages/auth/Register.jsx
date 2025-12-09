@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
+import { Toast } from "primereact/toast";
 
 import { registerRequest } from "../../api/auth";
 
@@ -13,18 +14,31 @@ const Register = () => {
 
   const navigate = useNavigate();
 
+  const toast = useRef(null);
+
   const handleSubmit = async () => {
     try {
       await registerRequest(email, password);
-      alert("Register success!");
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Register success!",
+        life: 2000,
+      });
       navigate("/login");
     } catch (err) {
-      alert(err.response?.data?.message || "Register failed");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: err.response?.data?.message || "Register failed",
+        life: 2000,
+      });
     }
   };
 
   return (
     <div className="w-full h-screen flex items-center justify-center bg-slate-100">
+      <Toast ref={toast} />
       <div className="bg-white p-6 shadow-md rounded-md w-80">
         <h2 className="text-xl font-bold mb-4 text-center">Register</h2>
 
