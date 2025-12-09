@@ -4,11 +4,15 @@ import { NavLink } from "react-router-dom";
 
 import { Button } from "primereact/button";
 
+import { useAuth } from "../../context/AuthContext";
+
 const Sidebar = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
+
+  const { logout } = useAuth();
 
   return (
     <>
@@ -220,10 +224,11 @@ const Sidebar = ({ children }) => {
         <nav className="border border-slate-200 p-4">
           <div className="w-full flex justify-end">
             <Button
-              label="Sign Up"
+              label="Logout"
               size="small"
               outlined
               className="border p-2 rounded-md border-slate-300 text-slate-700 text-sm"
+              onClick={logout}
             />
           </div>
         </nav>

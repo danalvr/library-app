@@ -1,0 +1,66 @@
+import { useState } from "react";
+
+import { useNavigate } from "react-router-dom";
+
+import { InputText } from "primereact/inputtext";
+import { Password } from "primereact/password";
+import { Button } from "primereact/button";
+
+import { registerRequest } from "../../api/auth";
+
+const Register = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async () => {
+    try {
+      await registerRequest(email, password);
+      alert("Register success!");
+      navigate("/login");
+    } catch (err) {
+      alert(err.response?.data?.message || "Register failed");
+    }
+  };
+
+  return (
+    <div className="w-full h-screen flex items-center justify-center bg-slate-100">
+      <div className="bg-white p-6 shadow-md rounded-md w-80">
+        <h2 className="text-xl font-bold mb-4 text-center">Register</h2>
+
+        <div className="flex flex-col gap-2">
+          <InputText
+            className="w-full"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <Password
+            toggleMask
+            className="w-full"
+            placeholder="Password"
+            feedback={false}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <Button className="w-full" label="Register" onClick={handleSubmit} />
+        </div>
+
+        <p className="text-center mt-2 text-sm">
+          Already have account?{" "}
+          <span
+            className="text-blue-500 cursor-pointer"
+            onClick={() => navigate("/login")}
+          >
+            Login
+          </span>
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default Register;
