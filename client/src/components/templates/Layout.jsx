@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 
-import Sidebar from "../molecules/sidebar";
+import Sidebar from "../molecules/Sidebar";
 
 const Layout = () => {
   return (
