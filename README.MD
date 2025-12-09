@@ -67,18 +67,18 @@ This system includes authentication, dashboard analytics, and full CRUD modules 
 | --------------------------------------- |
 | ![Image 1](assets/images/dashboard.jpg) |
 
-| Borrowings                               | Add Borrowings                               |
+| Borrowings                               | Pop up Borrowings                            |
 | ---------------------------------------- | -------------------------------------------- |
 | ![Image 1](assets/images/borrowings.jpg) | ![Image 2](assets/images/borrowings_add.jpg) |
 
-| Books                               | Add Books                               |
+| Books                               | Pop up Books                            |
 | ----------------------------------- | --------------------------------------- |
 | ![Image 1](assets/images/books.jpg) | ![Image 2](assets/images/books_add.jpg) |
 
-| Members                               | Add Members                               |
+| Members                               | Pop up Members                            |
 | ------------------------------------- | ----------------------------------------- |
 | ![Image 1](assets/images/members.jpg) | ![Image 2](assets/images/members_add.jpg) |
 
-| Authors                               | Add Authors                               |
+| Authors                               | Pop up Authors                            |
 | ------------------------------------- | ----------------------------------------- |
 | ![Image 1](assets/images/authors.jpg) | ![Image 2](assets/images/authors_add.jpg) |
