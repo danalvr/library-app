@@ -1,7 +1,6 @@
-import axios from "axios";
-const BASE_URL = "http://localhost:3000/dashboards";
+import api from "./axios";
 
 export const getDashboardData = async () => {
-  const res = await axios.get(BASE_URL);
+  const res = await api.get("dashboards");
   return res.data;
 };
